@@ -1,3 +1,24 @@
+<?php
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // var_dump($_POST);
+    // die();
+    $contact = [
+      "name" => $_POST["name"],
+      "phone_number" => $_POST["phone_number"],
+    ];
+
+    if (file_exists("contacts.json")) {
+      $contacts = json_decode(file_get_contents("contacts.json"), true);
+    }else{
+      $contacts = [];
+    }
+    $contacts[] = $contact;
+    file_put_contents("contacts.json", json_encode($contacts));
+    header("Location: index.php");
+
+  }
+?>
+<!-- Segun definio en el campo input atributo name asi llegara aqui en el post las variables -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,7 +58,7 @@
             <a class="nav-link" href="./index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="./add.html">Add Contact</a>
+            <a class="nav-link" href="./add.php">Add Contact</a>
           </li>
         </ul>
       </div>
@@ -51,11 +72,13 @@
           <div class="card">
             <div class="card-header">Add New Contact</div>
             <div class="card-body">
-              <form>
+              <!-- //ANCHOR -  Formulario action es el que nos ayuda con esta peticion-->
+              <form method="POST" action="add.php">
                 <div class="mb-3 row">
                   <label for="name" class="col-md-4 col-form-label text-md-end">Name</label>
 
                   <div class="col-md-6">
+                    <!-- la variable name define el nombre de variables de como van a llegar en el post -->
                     <input id="name" type="text" class="form-control" name="name" required autocomplete="name"
                       autofocus>
                   </div>
