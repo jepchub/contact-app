@@ -5,6 +5,7 @@ $database = "contacts_app";
 $user = "root";
 $password = "root";
 
+
 try {
   $conn = new PDO("mysql:host=$host;dbname=$database", $user, $password);
   // ANCHOR foreach ($conn->query("SHOW DATABASES") as $row) {
