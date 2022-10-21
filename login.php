@@ -2,40 +2,34 @@
 require "db.php";
 
 // if (!isset($_SESSION["user"])) {
-//   header("Location: login.php");
+//   header("Location: home.php");
 //   return;
 // }
 
 $error = null;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  if (empty($_POST["name"]) || empty($_POST["email"]) || empty($_POST["password"])) {
+  if ( empty($_POST["email"]) || empty($_POST["password"])) {
     $error="Please fill all the fileds";
   } //else if(!str_contains($_POST["email"],"@")){//esta funcion esta disponible en php8
     else if(!strpos($_POST["email"],"@")){
     $error = "Email format is incorrect.";
   }else{
-    $statement = $conn->prepare("SELECT * FROM users WHERE email = :email");
+    $statement = $conn->prepare("SELECT * FROM users WHERE email = :email LIMIT 1" );
     $statement->bindParam(":email", $_POST["email"]);
     $statement->execute();
 
-    if ($statement->rowCount()> 0) {
-      $error="this email is taken.";
+    if ($statement->rowCount()== 0) {
+      $error="Invalid credential.";
     }else{
-      $conn
-        ->prepare("INSERT INTO users (name, email, password) VALUES(:name, :email, :password)")
-        ->execute([
-          ":name" => $_POST["name"],
-          ":email" => $_POST["email"],
-          ":password" => password_hash($_POST["password"],PASSWORD_BCRYPT),
-        ]);
-
-        $statement = $conn->prepare("SELECT * FROM users WHERE email = :email LIMIT 1" );
-        $statement->bindParam(":email", $_POST["email"]);
-        $statement->execute();
-        $user= $statement->fetch(PDO::FETCH_ASSOC);
+      $user= $statement->fetch(PDO::FETCH_ASSOC);
+      if (!password_verify($_POST["password"], $user["password"])){
+        $error="Invalid credendials.";
+      }else{
         session_start();
+        unset($user["password"]);
         $_SESSION["user"] = $user;
         header("Location: home.php");
+      }
     }
   }
 }
@@ -47,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card">
-        <div class="card-header">Register</div>
+        <div class="card-header">Login</div>
         <div class="card-body">
           <!-- //ANCHOR  - if error -->
           <?php if ($error) : ?>
@@ -56,16 +50,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </p>
           <?php endif ?>
           <!-- //ANCHOR -  Formulario action es el que nos ayuda con esta peticion-->
-          <form method="POST" action="register.php">
-            <div class="mb-3 row">
+          <form method="POST" action="login.php">
+            <!--//ANCHOR Name user -->
+            <!-- <div class="mb-3 row">
               <label for="name" class="col-md-4 col-form-label text-md-end">Name</label>
 
-              <!--//ANCHOR Name user -->
-              <div class="col-md-6">
+              <div class="col-md-6"> -->
                 <!-- la variable name define el nombre de variables de como van a llegar en el post -->
-                <input id="name" type="text" class="form-control" name="name" autocomplete="name" autofocus>
+                <!-- <input id="name" type="text" class="form-control" name="name" autocomplete="name" autofocus>
               </div>
-            </div>
+            </div> -->
             <!--//ANCHOR Email user -->
             <div class="mb-3 row">
               <label for="email" class="col-md-4 col-form-label text-md-end">Email</label>

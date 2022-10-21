@@ -1,5 +1,9 @@
 <?php
 require "db.php";
+if (!isset($_SESSION["user"])) {
+  header("Location: login.php");
+  return;
+}
 $error = null;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // var_dump($_POST);

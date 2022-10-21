@@ -1,5 +1,6 @@
 <?php
 require "db.php";
+session_start();
 // $contacs = [
 //   ["name" => "pepe", "phone_number"=>"2131231"],
 //   ["name" => "Antonio", "phone_number"=>"8534321"],
@@ -13,6 +14,10 @@ require "db.php";
 //   $contacts = [];
 // }
 
+if (!isset($_SESSION["user"])) {
+  header("Location: login.php");
+  return;
+}
 $contacts = $conn->query("SELECT * FROM contacts");
 // var_dump($contacts);
 // die()
