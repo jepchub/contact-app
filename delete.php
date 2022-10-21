@@ -33,5 +33,5 @@ $conn->prepare("DELETE FROM contacts WHERE id = :id")->execute([":id" => $id]); 
 // $statement->execute()([":id"=>$id]); //shortcut
 // $statement->bindParam(":id", $id);
 // $statement->execute();
-
+$_SESSION["flash"] = ["message" => "Contact {$contact['name']} deleted."];
 header("Location: home.php");

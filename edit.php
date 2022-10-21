@@ -20,9 +20,9 @@ if ($statement->rowCount() == 0) {
 
 // Para que no eliminen o editen contactos de otros usurios
 $contact = $statement->fetch(PDO::FETCH_ASSOC);
-if ($contact["user_id"]!==$_SESSION["user"]["id"]) {
+if ($contact["user_id"] !== $_SESSION["user"]["id"]) {
   http_response_code(403);
-  echo("<h1>"."HTTP 403 UNAUTHORIZED Pinchi juacker"."</h1>");
+  echo ("<h1>" . "HTTP 403 UNAUTHORIZED Pinchi juacker" . "</h1>");
   return;
 }
 
@@ -44,7 +44,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ":phone_number" => $_POST["phone_number"],
       ]
     );
+
+    $_SESSION["flash"] = ["message" => "Contact {$_POST['name']} updated."];
     header("Location: home.php");
+    return;
   }
 }
 ?>
