@@ -17,7 +17,14 @@ if ($statement->rowCount() == 0) {
   echo ("HTTP 404 NOT FOUND");
   return;
 }
+
+// Para que no eliminen o editen contactos de otros usurios
 $contact = $statement->fetch(PDO::FETCH_ASSOC);
+if ($contact["user_id"]!==$_SESSION["user"]["id"]) {
+  http_response_code(403);
+  echo("<h1>"."HTTP 403 UNAUTHORIZED Pinchi juacker"."</h1>");
+  return;
+}
 
 $error = null;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
